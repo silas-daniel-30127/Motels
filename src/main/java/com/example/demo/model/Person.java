@@ -1,34 +1,24 @@
 package com.example.demo.model;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
 
-
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Entity
+@Table(name = "people")
 public class Person {
-    private final int id;
+    @Id
+    @GeneratedValue
+    private int id;
     @NotBlank
-    private final String name;
-
-    public Person(@JsonProperty("id") int id,
-                  @JsonProperty("name") String name) {
-        this.id = id;
-        this.name = name;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    @Override
-    public String toString() {
-        return "Person{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                '}';
-    }
+    private String name;
 }

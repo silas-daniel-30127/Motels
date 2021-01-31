@@ -1,40 +1,49 @@
 package com.example.demo.service;
 
-import com.example.demo.deo.MotelDeo;
 import com.example.demo.model.Motel;
+import com.example.demo.repositories.MotelRepo;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class MotelService {
-    private final MotelDeo motelDeo;
+
+    private final MotelRepo motelRepo;
 
     @Autowired
-    public MotelService(@Qualifier("mySQLMotel") MotelDeo motelDeo) {
-        this.motelDeo = motelDeo;
+    public MotelService(MotelRepo motelRepo) {
+        this.motelRepo = motelRepo;
     }
 
     public void addMotel(Motel motel) {
-        motelDeo.insertMotel(motel);
+        motelRepo.save(motel);
+    }
+
+    public void addMotels(List<Motel> motels) {
+        motelRepo.saveAll(motels);
     }
 
     public List<Motel> getAllMotels() {
-        return motelDeo.selectAllMotels();
+        return (List<Motel>) motelRepo.findAll();
     }
 
-    public Optional<Motel> selectMotelById(int id) {
-        return motelDeo.selectMotelById(id);
+    public Motel selectMotelById(int id) {
+        return motelRepo.findById(id).orElse(null);
     }
 
-    public int deleteMotelById(int id) {
-        return motelDeo.deleteMotelById(id);
+    public String deleteMotelById(int id) {
+        motelRepo.deleteById(id);
+        return "Motel " + id + " removed!!";
     }
 
-    public int updateMotelById(int id, Motel motel) {
-        return motelDeo.updateMotelById(id, motel);
+    public Motel updateMotelById(Motel motel) {
+        Motel existingMotel = motelRepo.findById(motel.getId()).orElse(null);
+        assert existingMotel != null;
+        existingMotel.setName(motel.getName());
+        existingMotel.setLatitude(motel.getLatitude());
+        existingMotel.setLongitude(motel.getLongitude());
+        return motelRepo.save(existingMotel);
     }
 }

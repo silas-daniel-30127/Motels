@@ -3,16 +3,15 @@ package com.example.demo.api;
 import com.example.demo.model.Person;
 import com.example.demo.service.PersonService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.lang.NonNull;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
-import javax.validation.constraints.NotBlank;
 import java.util.List;
 
-@RequestMapping("api/v1/person")
+@RequestMapping("api/v1/people")
 @RestController
 public class PersonController {
+
+
     private final PersonService personService;
 
     @Autowired
@@ -21,28 +20,39 @@ public class PersonController {
     }
 
     @PostMapping
-    public void addPerson(@Valid @NonNull @NotBlank @RequestBody Person person) {
-        this.personService.addPerson(person);
+    public void addPerson(@RequestBody Person person) {
+        this.personService.savePerson(person);
     }
 
     @GetMapping
     public List<Person> getAllPeople() {
-        return personService.getAllPeople();
+        return personService.getPeople();
     }
 
     @GetMapping(path = "{id}")
     public Person selectPersonById(@PathVariable("id") int id) {
-        return personService.selectPersonById(id)
-                .orElse(null);
+        return personService.getPersonById(id);
     }
 
     @DeleteMapping(path = "{id}")
-    public int deletePersonById(@PathVariable("id") int id) {
+    public String deletePersonById(@PathVariable("id") int id) {
         return personService.deletePersonById(id);
     }
 
     @PutMapping(path = "{id}")
-    public int updatePersonById(@PathVariable("id") int id, @Valid @NonNull @RequestBody Person person) {
-        return personService.updatePersonById(id, person);
+    public Person updatePersonById(@RequestBody Person person) {
+        return personService.updatePersonById(person);
     }
+
+    @GetMapping("/name/{name}")
+    public Person getPersonByName(@PathVariable("name") String name) {
+        return personService.getPersonByName(name);
+    }
+
+
+    @PostMapping("/addAll")
+    public List<Person> addPeople(@RequestBody List<Person> people) {
+        return personService.savePeople(people);
+    }
+
 }

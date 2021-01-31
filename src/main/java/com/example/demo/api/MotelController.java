@@ -3,11 +3,8 @@ package com.example.demo.api;
 import com.example.demo.model.Motel;
 import com.example.demo.service.MotelService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.lang.NonNull;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
-import javax.validation.constraints.NotBlank;
 import java.util.List;
 
 @RequestMapping("api/v1/motels")
@@ -21,8 +18,13 @@ public class MotelController {
     }
 
     @PostMapping
-    public void addMotel(@Valid @NonNull @NotBlank @RequestBody Motel motel) {
+    public void addMotel(@RequestBody Motel motel) {
         motelService.addMotel(motel);
+    }
+
+    @PostMapping("/addMore")
+    public void addMultipleMotels(@RequestBody List<Motel> motels) {
+        motelService.addMotels(motels);
     }
 
     @GetMapping
@@ -32,17 +34,16 @@ public class MotelController {
 
     @GetMapping(path = "{id}")
     public Motel selectMotelById(@PathVariable("id") int id) {
-        return motelService.selectMotelById(id).orElse(null);
+        return motelService.selectMotelById(id);
     }
 
     @DeleteMapping(path = "{id}")
-    public int deleteMotelById(@PathVariable("id") int id) {
+    public String deleteMotelById(@PathVariable("id") int id) {
         return motelService.deleteMotelById(id);
     }
 
-    @PutMapping(path = "{id}")
-    public int updateMotelById(@PathVariable("id") int id, @Valid @NonNull @RequestBody Motel motel) {
-        return motelService.updateMotelById(id, motel);
+    @PutMapping(path = "update")
+    public Motel updateMotelById(@RequestBody Motel motel) {
+        return motelService.updateMotelById(motel);
     }
-
 }
